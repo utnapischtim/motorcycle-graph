@@ -10,11 +10,11 @@ export class Polygon {
     this.polygon = this.createPolygon(points);
   }
 
-  public getPolygon(): geom.Segment[] {
+  public getPolygon(): geom.ISegment[] {
     return this.polygon;
   }
 
-  private createPolygon(points: geom.IPoint[]) {
+  private createPolygon(points: geom.IPoint[]): geom.ISegment[] {
     let polygon: geom.ISegment[] = [];
     points = geom.close(points);
 
@@ -39,7 +39,7 @@ export class Motorcycles {
     this.calculateMotorcycleSegments();
   }
 
-  public getMotorcycleSegments() {
+  public getMotorcycleSegments(): MotorcycleSegment[] {
     return this.motorcycleFullSegments;
   }
 
@@ -153,7 +153,7 @@ export class MotorcycleGraph {
     }
   }
 
-  private buildMotorcycleGraph() {
+  private buildMotorcycleGraph(): void {
     this.intersectionPoints.sort((a, b) => a.time - b.time);
 
     for (const inter of this.intersectionPoints) {
@@ -175,11 +175,11 @@ export class MotorcycleGraph {
     }
   }
 
-  public addSegments(segment: MotorcycleSegment) {
+  public addSegments(segment: MotorcycleSegment): void {
     this.motorcycleSegments.push(segment);
   }
 
-  public getSegments() {
+  public getSegments(): MotorcycleSegment[] {
     return this.motorcycleSegments;
   }
 }
