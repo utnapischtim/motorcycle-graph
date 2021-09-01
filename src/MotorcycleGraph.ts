@@ -26,15 +26,15 @@ export class Polygon {
 }
 
 export class Motorcycles {
-  public width: number = 0;
-  public height: number = 0;
+  public areaNorm: number = 0;
+  public pi2: number = 0;
   public polygon: geom.Segment[] = [];
   public motorcycleFullSegments: MotorcycleSegment[] = [];
 
   public constructor(polygon: geom.Segment[] = [], width: number, height: number) {
     this.polygon = polygon;
-    this.width = width;
-    this.height = height;
+    this.areaNorm = Math.sqrt(width*width + height*height);
+    this.pi2 = 2*Math.PI;
 
     this.calculateMotorcycleSegments();
   }
@@ -47,29 +47,24 @@ export class Motorcycles {
     const size = this.polygon.length;
     let motorcycleCounter = 0;
 
-    for (let i = 0; i < size-1; i += 1) {
-      if (geom.isReflex(this.polygon[i], this.polygon[i+1])) {
-        this.motorcycleFullSegments.push(this.motorcycle(this.polygon[i], this.polygon[i+1], `${motorcycleCounter++}`));
+    for (let i = 0; i < size; i += 1) {
+      if (geom.isReflex(this.polygon[i], this.polygon[(i+1) % size])) {
+        this.motorcycleFullSegments.push(this.motorcycle(this.polygon[i], this.polygon[(i+1) % size], `${motorcycleCounter++}`));
       }
-    }
-
-    if (geom.isReflex(this.polygon[size - 1], this.polygon[0])) {
-      this.motorcycleFullSegments.push(this.motorcycle(this.polygon[size - 1], this.polygon[0], `${motorcycleCounter++}`));
     }
   }
 
   private motorcycle(segA: geom.ISegment, segB: geom.ISegment, text=""): MotorcycleSegment {
     let bisector = geom.angleBisector(segA, segB).invert();
-    let scaleFactor = Math.sqrt(this.width*this.width + this.height*this.height) / bisector.norm();
+    let scaleFactor = this.areaNorm / bisector.norm();
 
     bisector.scale(scaleFactor);
 
     let start = segA.t.clone();
     let target = start.add(bisector);
 
-    const alpha = 2*Math.PI - geom.angleToRadians(geom.segmentAngleSegment(segA, segB));
+    const alpha = this.pi2 - geom.angleToRadians(geom.segmentAngleSegment(segA, segB));
     const velocity = 1 / Math.sin(alpha/2);
-
     const motorcycle = new MotorcycleSegment(start, target);
 
     for (const segment of this.polygon) {
