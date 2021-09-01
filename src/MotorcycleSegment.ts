@@ -1,6 +1,12 @@
 import * as geom from "geometric";
 import type { MotorcyclePoint } from "./MotorcyclePoint";
 
+export type ReductionCounterInformation = {
+  reductionCounter: number;
+  text: string;
+  position: {x: number, y: number};
+};
+
 export class MotorcycleSegment extends geom.Segment {
   public intersections: MotorcyclePoint[] = [];
   public velocity: number = 0;
@@ -21,6 +27,17 @@ export class MotorcycleSegment extends geom.Segment {
     this.reference_target = t;
 
     this.doBackup();
+  }
+
+  public getReductionCounterInformation(): ReductionCounterInformation {
+    return {
+      reductionCounter: this.reductionCounter,
+      text: this.text,
+      position: {
+        x: this.s.x,
+        y: this.s.y
+      }
+    };
   }
 
   public getText(): string {
