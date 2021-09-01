@@ -90,6 +90,11 @@ export class Motorcycles {
 export class MotorcycleGraph {
   public motorcycleSegments: MotorcycleSegment[] = [];
   public intersectionPoints: MotorcyclePoint[] = [];
+  public isShortcut: boolean = false;
+
+  public constructor(props: {isShortcut: boolean} = {isShortcut: false}) {
+    this.isShortcut = props.isShortcut;
+  }
 
   public add(intersection: MotorcyclePoint): void {
     let isExisting = false;
@@ -116,8 +121,10 @@ export class MotorcycleGraph {
       return dist / v;
     }
 
+    const toBeCuted = this.isShortcut ? [this.motorcycleSegments[this.motorcycleSegments.length - 1]] : this.motorcycleSegments;
+
     for (const segA of this.motorcycleSegments) {
-      for (const segB of this.motorcycleSegments) {
+      for (const segB of toBeCuted) {
         if (segA.notEqual(segB)) {
           try {
             const inter: geom.IPoint = <geom.IPoint>geom.intersection(segA, segB);
