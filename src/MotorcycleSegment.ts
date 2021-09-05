@@ -11,6 +11,7 @@ export class MotorcycleSegment extends geom.Segment {
   public intersections: MotorcyclePoint[] = [];
   public velocity: number = 0;
   public text: string = "";
+  public nodeNumber: number = 0;
   public isAlive: boolean = true;
   public backup: geom.IPoint[] = [];
   public reductionCounter: number = 0;
@@ -24,6 +25,7 @@ export class MotorcycleSegment extends geom.Segment {
 
     this.velocity = v;
     this.text = text;
+    this.nodeNumber = parseInt(text);
     this.reference_target = t;
 
     this.doBackup();
@@ -46,6 +48,10 @@ export class MotorcycleSegment extends geom.Segment {
 
   public getNodeName(): string {
     return this.text;
+  }
+
+  public getNodeNumber(): number {
+    return this.nodeNumber;
   }
 
   public getReductionCounter(): number {

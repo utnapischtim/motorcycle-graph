@@ -1,5 +1,6 @@
 import type * as geom from "geometric";
 import { Polygon, Motorcycles, MotorcycleGraph } from "./MotorcycleGraph";
+import type { IntersectionCache } from "./MotorcycleGraph";
 import type { MotorcycleSegment } from "./MotorcycleSegment";
 
 export function calculateMotorcycles(points: geom.IPoint[], width: number, height: number) {
@@ -13,6 +14,13 @@ export function calculateMotorcycleGraph(motorcycles: MotorcycleSegment[]) {
   const motorcycleGraph = new MotorcycleGraph();
   motorcycleGraph.calculateMotorcycleGraph(motorcycles);
   return motorcycleGraph.getSegments();
+}
+
+export function calculateIntersectionCache(motorcycles: MotorcycleSegment[]): IntersectionCache {
+  const motorcycleGraph = new MotorcycleGraph({isShortcut: false, buildCache: true});
+  motorcycleGraph.motorcycleSegments = motorcycles;
+  motorcycleGraph.calculateMotorcycleSegmentIntersections();
+  return motorcycleGraph.intersectionCache;
 }
 
 // function customizedRun() {
