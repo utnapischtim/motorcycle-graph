@@ -54,6 +54,12 @@ export class MotorcycleSegment extends geom.Segment {
     return this.nodeNumber;
   }
 
+  public updateReductionCounter(): void {
+    if (this.reference_target.notEqual(this.t)) {
+      this.reductionCounter += 1;
+    }
+  }
+
   public getReductionCounter(): number {
     return this.reductionCounter;
   }
@@ -64,6 +70,7 @@ export class MotorcycleSegment extends geom.Segment {
   }
 
   public reset(): void {
+    this.reference_target = this.t.clone();
     this.s = this.backup[0].clone();
     this.t = this.backup[1].clone();
     this.isAlive = true;
@@ -71,15 +78,9 @@ export class MotorcycleSegment extends geom.Segment {
 
   public resetReductionCounter(): void {
     this.reductionCounter = 0;
-    this.reference_target = this.backup[1].clone();
   }
 
   public setTarget(t: geom.IPoint, timeOfDeath: number = 0): void {
-    if (geom.distance(this.s, t) < geom.distance(this.s, this.reference_target)) {
-      this.reductionCounter += 1;
-      this.reference_target = t;
-    }
-
     if (timeOfDeath > 0) {
       this.timeOfDeath = timeOfDeath;
       this.isAlive = false;

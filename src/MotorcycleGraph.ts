@@ -119,6 +119,7 @@ export class MotorcycleGraph {
 
     this.calculateMotorcycleSegmentIntersections();
     this.buildMotorcycleGraph();
+    this.calculateReductionCounter();
   }
 
   public calculateMotorcycleSegmentIntersections(): void {
@@ -194,6 +195,10 @@ export class MotorcycleGraph {
         }
       }
     }
+  }
+
+  private calculateReductionCounter(): void {
+    this.motorcycleSegments.forEach(m => m.updateReductionCounter());
   }
 
   public addSegments(segment: MotorcycleSegment): void {
