@@ -1,5 +1,7 @@
 import type * as geom from "geometric";
-import { Polygon, Motorcycles, MotorcycleGraph } from "./MotorcycleGraph";
+import { MotorcycleGraph, MotorcycleGraphCached } from "./MotorcycleGraph";
+import { Polygon } from "./Polygon";
+import { Motorcycles } from "./Motorcycles";
 import type { IntersectionCache } from "./MotorcycleGraph";
 import type { MotorcycleSegment } from "./MotorcycleSegment";
 
@@ -23,24 +25,27 @@ export function calculateIntersectionCache(motorcycles: MotorcycleSegment[]): In
   return motorcycleGraph.intersectionCache;
 }
 
-// function customizedRun() {
-//   let localCustomList = [];
+export function calculateRandomList(
+  motorcyclesCustomList: MotorcycleSegment[],
+  intersectionCache: IntersectionCache,
+): MotorcycleSegment[] {
+  for (const motorcycle of motorcyclesCustomList) {
+    motorcycle.resetReductionCounter();
+  }
 
-//   for (const motorcycle of motorcycles) {
-//     motorcycle.reset();
-//     motorcycle.resetReductionCounter();
-//   }
+  const motorcycleGraph = new MotorcycleGraphCached({isShortcut: true, buildCache: false});
+  motorcycleGraph.setIntersectionCache(intersectionCache);
 
-//   for (const customEntry of motorcyclesCustomList) {
-//     for (const motorcycle of motorcycles) {
-//       motorcycle.reset();
-//     }
+  let localCustomList: MotorcycleSegment[] = [];
 
-//     customEntry.isUsed = true;
-//     localCustomList.push(customEntry);
-//     middleLayerDrawMotorcycleGraph(localCustomList, $polygonActive);
-//     drawMotorcycles(motorcycles);
-//   }
+  for (const customEntry of motorcyclesCustomList) {
+    localCustomList.push(customEntry);
 
-//   return localCustomList;
-// }
+    for (const motorcycle of localCustomList) {
+      motorcycle.reset();
+    }
+    motorcycleGraph.calculateMotorcycleGraph(localCustomList);
+  }
+
+  return localCustomList;
+}

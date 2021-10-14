@@ -1,5 +1,5 @@
 import * as geom from "geometric";
-import { MotorcycleSegment } from "./MotorcycleSegment";
+import type { MotorcycleSegment } from "./MotorcycleSegment";
 import { MotorcyclePoint } from "./MotorcyclePoint";
 
 export type IntersectionCachePoint = {
@@ -11,84 +11,6 @@ export type IntersectionCache = {
   [key: string]: IntersectionCachePoint;
 }
 
-export class Polygon {
-  public polygon: geom.Segment[] = [];
-
-  public constructor(points: geom.IPoint[]) {
-    this.polygon = this.createPolygon(points);
-  }
-
-  public getPolygon(): geom.ISegment[] {
-    return this.polygon;
-  }
-
-  private createPolygon(points: geom.IPoint[]): geom.ISegment[] {
-    let polygon: geom.ISegment[] = [];
-    points = geom.close(points);
-
-    for (let k = 0; k < points.length-1; k += 1) {
-      polygon.push(new geom.Segment(points[k], points[k+1]));
-    }
-    return polygon;
-  }
-}
-
-export class Motorcycles {
-  public areaNorm: number = 0;
-  public pi2: number = 0;
-  public polygon: geom.Segment[] = [];
-  public motorcycleFullSegments: MotorcycleSegment[] = [];
-
-  public constructor(polygon: geom.Segment[] = [], width: number, height: number) {
-    this.polygon = polygon;
-    this.areaNorm = Math.sqrt(width*width + height*height);
-    this.pi2 = 2*Math.PI;
-
-    this.calculateMotorcycleSegments();
-  }
-
-  public getMotorcycleSegments(): MotorcycleSegment[] {
-    return this.motorcycleFullSegments;
-  }
-
-  private calculateMotorcycleSegments(): void {
-    const size = this.polygon.length;
-    let motorcycleCounter = 0;
-
-    for (let i = 0; i < size; i += 1) {
-      if (geom.isReflex(this.polygon[i], this.polygon[(i+1) % size])) {
-        this.motorcycleFullSegments.push(this.motorcycle(this.polygon[i], this.polygon[(i+1) % size], `${motorcycleCounter++}`));
-      }
-    }
-  }
-
-  private motorcycle(segA: geom.ISegment, segB: geom.ISegment, text=""): MotorcycleSegment {
-    let bisector = geom.angleBisector(segA, segB).invert();
-    let scaleFactor = this.areaNorm / bisector.norm();
-
-    bisector.scale(scaleFactor);
-
-    let start = segA.t.clone();
-    let target = start.add(bisector);
-
-    const alpha = this.pi2 - geom.angleToRadians(geom.segmentAngleSegment(segA, segB));
-    const velocity = 1 / Math.sin(alpha/2);
-    const motorcycle = new MotorcycleSegment(start, target);
-
-    for (const segment of this.polygon) {
-      if (!geom.sharePoint(motorcycle, segment)) {
-        try {
-          target = <geom.IPoint>geom.intersection(motorcycle, segment);
-          motorcycle.setTarget(target);
-        } catch (e) {
-          // console.log(e);
-        }
-      }
-    }
-
-    return new MotorcycleSegment(start, target, velocity, text);
-  }
-}
 
 export class MotorcycleGraph {
   public intersectionCache: IntersectionCache = <IntersectionCache>{};
@@ -116,7 +38,6 @@ export class MotorcycleGraph {
 
   public calculateMotorcycleGraph(segments: MotorcycleSegment[]): void {
     this.motorcycleSegments = segments;
-
     this.calculateMotorcycleSegmentIntersections();
     this.buildMotorcycleGraph();
     this.calculateReductionCounter();
@@ -133,42 +54,41 @@ export class MotorcycleGraph {
     for (const segA of this.motorcycleSegments) {
       for (const segB of toBeCuted) {
         if (segA.notEqual(segB)) {
-          try {
-            const inter: geom.IPoint = <geom.IPoint>geom.intersection(segA, segB);
+          const inter: geom.IPoint = <geom.IPoint>geom.intersection(segA, segB);
 
-            const segATime: number = time(segA.s, inter, segA.velocity);
-            const segBTime: number = time(segB.s, inter, segB.velocity);
+          if (!inter)
+            continue
 
-            const pointA: MotorcyclePoint = MotorcyclePoint.fromPoint(inter);
-            pointA.time = segATime;
-            pointA.lostMotorcycle = segATime < segBTime ? segB : segA;
-            pointA.winMotorcycle = segATime < segBTime ? segA : segB;
+          const segATime: number = time(segA.s, inter, segA.velocity);
+          const segBTime: number = time(segB.s, inter, segB.velocity);
 
-            const pointB: MotorcyclePoint = MotorcyclePoint.fromPoint(inter);
-            pointB.time = segBTime
-            pointB.lostMotorcycle = segATime < segBTime ? segB : segA;
-            pointB.winMotorcycle = segATime < segBTime ? segA : segB;
+          const pointA: MotorcyclePoint = MotorcyclePoint.fromPoint(inter);
+          pointA.time = segATime;
+          pointA.lostMotorcycle = segATime < segBTime ? segB : segA;
+          pointA.winMotorcycle = segATime < segBTime ? segA : segB;
 
-            if (segATime < segBTime) {
-              pointA.state = "win";
-              pointB.state = "lost";
-            } else {
-              pointA.state = "lost";
-              pointB.state = "win";
-            }
+          const pointB: MotorcyclePoint = MotorcyclePoint.fromPoint(inter);
+          pointB.time = segBTime
+          pointB.lostMotorcycle = segATime < segBTime ? segB : segA;
+          pointB.winMotorcycle = segATime < segBTime ? segA : segB;
 
+          if (segATime < segBTime) {
+            pointA.state = "win";
+            pointB.state = "lost";
+          } else {
+            pointA.state = "lost";
+            pointB.state = "win";
+          }
+
+          if (this.buildCache) {
+            const nodeNumberA = segA.getNodeNumber();
+            const nodeNumberB = segB.getNodeNumber();
+
+            const key: string = nodeNumberA < nodeNumberB ? `${nodeNumberA}${nodeNumberB}` : `${nodeNumberB}${nodeNumberA}`;
+            this.intersectionCache[key] = {pointA, pointB};
+          } else {
             this.add(pointA);
             this.add(pointB);
-
-            if (this.buildCache) {
-              const nodeNumberA = segA.getNodeNumber();
-              const nodeNumberB = segB.getNodeNumber();
-
-              const key: string = nodeNumberA < nodeNumberB ? `${nodeNumberA}${nodeNumberB}` : `${nodeNumberB}${nodeNumberA}`;
-              this.intersectionCache[key] = {pointA, pointB};
-            }
-          } catch (e) {
-            //console.log(e);
           }
         }
       }
@@ -224,14 +144,13 @@ export class MotorcycleGraphCached extends MotorcycleGraph {
   }
 
   public calculateMotorcycleSegmentIntersections(): void {
-    for (const segA of this.motorcycleSegments) {
-      const segB = this.motorcycleSegments[this.motorcycleSegments.length - 1];
+    const segB = this.motorcycleSegments[this.motorcycleSegments.length - 1];
+    const size = this.motorcycleSegments.length - 1; // -1 to not have to test
+                                                     // -about equality of segA
+                                                     // -to segB
 
-      if (segA.equal(segB)) {
-        continue;
-      }
-
-      const nodeNumberA = segA.getNodeNumber();
+    for (let i = 0; i < size; i += 1) {
+      const nodeNumberA = this.motorcycleSegments[i].getNodeNumber();
       const nodeNumberB = segB.getNodeNumber();
 
       const key: string = nodeNumberA < nodeNumberB ? `${nodeNumberA}${nodeNumberB}` : `${nodeNumberB}${nodeNumberA}`;
