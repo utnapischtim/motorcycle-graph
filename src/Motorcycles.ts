@@ -55,6 +55,7 @@ export class Motorcycles {
     }
 
     motorcycle.reference_target = motorcycle.t;
+    motorcycle.doBackup();
     return motorcycle;
   }
 }

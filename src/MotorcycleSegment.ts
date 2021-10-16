@@ -64,7 +64,8 @@ export class MotorcycleSegment extends geom.Segment {
     return this.reductionCounter;
   }
 
-  private doBackup(): void {
+  public doBackup(): void {
+    this.backup = [];
     this.backup.push(this.s.clone());
     this.backup.push(this.t.clone());
   }
