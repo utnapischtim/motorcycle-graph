@@ -1,10 +1,10 @@
 import * as geom from "geometric";
 import type { MotorcycleSegment } from "./MotorcycleSegment";
-import { MotorcyclePoint } from "./MotorcyclePoint";
+import { Intersection } from "./Intersection";
 
 export type IntersectionCachePoint = {
-  "pointA": MotorcyclePoint;
-  "pointB": MotorcyclePoint;
+  "pointA": Intersection;
+  "pointB": Intersection;
 }
 
 export type IntersectionCache = {
@@ -15,7 +15,7 @@ export type IntersectionCache = {
 export class MotorcycleGraph {
   public intersectionCache: IntersectionCache = <IntersectionCache>{};
   public motorcycleSegments: MotorcycleSegment[] = [];
-  public intersectionPoints: MotorcyclePoint[] = [];
+  public intersectionPoints: Intersection[] = [];
   public isShortcut: boolean = false;
   public buildCache: boolean = false;
 
@@ -24,7 +24,7 @@ export class MotorcycleGraph {
     this.buildCache = props.buildCache;
   }
 
-  public add(intersection: MotorcyclePoint): void {
+  public add(intersection: Intersection): void {
     let isExisting = false;
 
     for (const inter of this.intersectionPoints) {
@@ -62,12 +62,12 @@ export class MotorcycleGraph {
           const segATime: number = time(segA.s, inter, segA.velocity);
           const segBTime: number = time(segB.s, inter, segB.velocity);
 
-          const pointA: MotorcyclePoint = MotorcyclePoint.fromPoint(inter);
+          const pointA: Intersection = Intersection.fromPoint(inter);
           pointA.time = segATime;
           pointA.lostMotorcycle = segATime < segBTime ? segB : segA;
           pointA.winMotorcycle = segATime < segBTime ? segA : segB;
 
-          const pointB: MotorcyclePoint = MotorcyclePoint.fromPoint(inter);
+          const pointB: Intersection = Intersection.fromPoint(inter);
           pointB.time = segBTime
           pointB.lostMotorcycle = segATime < segBTime ? segB : segA;
           pointB.winMotorcycle = segATime < segBTime ? segA : segB;
@@ -138,7 +138,7 @@ export class MotorcycleGraphCached extends MotorcycleGraph {
     this.intersectionCache = cache;
   }
 
-  public add(intersection: MotorcyclePoint): void {
+  public add(intersection: Intersection): void {
     // with isShortcut==true it is not possible that intersection could be doubled
     this.intersectionPoints.push(intersection);
   }

@@ -1,5 +1,4 @@
 import * as geom from "geometric";
-import type { MotorcyclePoint } from "./MotorcyclePoint";
 
 export type ReductionCounterInformation = {
   reductionCounter: number;
@@ -8,7 +7,6 @@ export type ReductionCounterInformation = {
 };
 
 export class MotorcycleSegment extends geom.Segment {
-  public intersections: MotorcyclePoint[] = [];
   public velocity: number = 0;
   public text: string = "";
   public nodeNumber: number = 0;
