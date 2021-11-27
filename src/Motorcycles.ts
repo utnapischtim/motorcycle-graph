@@ -9,8 +9,8 @@ export class Motorcycles {
 
   public constructor(polygon: geom.Segment[] = [], width: number, height: number) {
     this.polygon = polygon;
-    this.areaNorm = Math.sqrt(width*width + height*height);
-    this.pi2 = 2*Math.PI;
+    this.areaNorm = Math.sqrt(width * width + height * height);
+    this.pi2 = 2 * Math.PI;
 
     this.calculateMotorcycleSegments();
   }
@@ -24,13 +24,15 @@ export class Motorcycles {
     let motorcycleCounter = 0;
 
     for (let i = 0; i < size; i += 1) {
-      if (geom.isReflex(this.polygon[i], this.polygon[(i+1) % size])) {
-        this.motorcycleFullSegments.push(this.motorcycle(this.polygon[i], this.polygon[(i+1) % size], `${motorcycleCounter++}`));
+      if (geom.isReflex(this.polygon[i], this.polygon[(i + 1) % size])) {
+        this.motorcycleFullSegments.push(
+          this.motorcycle(this.polygon[i], this.polygon[(i + 1) % size], `${motorcycleCounter++}`),
+        );
       }
     }
   }
 
-  private motorcycle(segA: geom.ISegment, segB: geom.ISegment, text=""): MotorcycleSegment {
+  private motorcycle(segA: geom.ISegment, segB: geom.ISegment, text = ""): MotorcycleSegment {
     let bisector = geom.angleBisector(segA, segB).invert();
     let scaleFactor = this.areaNorm / bisector.norm();
 
@@ -40,7 +42,7 @@ export class Motorcycles {
     let target = start.add(bisector);
 
     const alpha = this.pi2 - geom.angleToRadians(geom.segmentAngleSegment(segA, segB));
-    const velocity = 1 / Math.sin(alpha/2);
+    const velocity = 1 / Math.sin(alpha / 2);
     const motorcycle = new MotorcycleSegment(start, target, velocity, text);
 
     for (const segment of this.polygon) {
@@ -50,7 +52,6 @@ export class Motorcycles {
         if (target) {
           motorcycle.setTarget(target);
         }
-
       }
     }
 

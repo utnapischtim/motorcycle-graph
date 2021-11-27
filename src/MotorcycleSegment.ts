@@ -3,7 +3,7 @@ import * as geom from "geometric";
 export type ReductionCounterInformation = {
   reductionCounter: number;
   text: string;
-  position: {x: number, y: number};
+  position: { x: number; y: number };
 };
 
 export class MotorcycleSegment extends geom.Segment {
@@ -35,8 +35,8 @@ export class MotorcycleSegment extends geom.Segment {
       text: this.text,
       position: {
         x: this.s.x,
-        y: this.s.y
-      }
+        y: this.s.y,
+      },
     };
   }
 

@@ -4,5 +4,9 @@ export { Polygon } from "./Polygon";
 export type { IntersectionCache } from "./MotorcycleGraph";
 export { MotorcycleSegment } from "./MotorcycleSegment";
 export type { ReductionCounterInformation } from "./MotorcycleSegment";
-export { calculateMotorcycles, calculateMotorcycleGraph, calculateIntersectionCache, calculateRandomList } from "./utils";
-
+export {
+  calculateMotorcycles,
+  calculateMotorcycleGraph,
+  calculateIntersectionCache,
+  calculateRandomList,
+} from "./utils";

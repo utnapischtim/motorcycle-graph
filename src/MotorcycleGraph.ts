@@ -3,14 +3,13 @@ import type { MotorcycleSegment } from "./MotorcycleSegment";
 import { Intersection } from "./Intersection";
 
 export type IntersectionCachePoint = {
-  "pointA": Intersection;
-  "pointB": Intersection;
-}
+  pointA: Intersection;
+  pointB: Intersection;
+};
 
 export type IntersectionCache = {
   [key: string]: IntersectionCachePoint;
-}
-
+};
 
 export class MotorcycleGraph {
   public intersectionCache: IntersectionCache = <IntersectionCache>{};
@@ -19,7 +18,7 @@ export class MotorcycleGraph {
   public isShortcut: boolean = false;
   public buildCache: boolean = false;
 
-  public constructor(props: {isShortcut: boolean, buildCache: boolean} = {isShortcut: false, buildCache: false}) {
+  public constructor(props: { isShortcut: boolean; buildCache: boolean } = { isShortcut: false, buildCache: false }) {
     this.isShortcut = props.isShortcut;
     this.buildCache = props.buildCache;
   }
@@ -47,17 +46,20 @@ export class MotorcycleGraph {
     const time = (s: geom.IPoint, e: geom.IPoint, v: number) => {
       const dist = geom.distance(s, e);
       return dist / v;
-    }
+    };
 
-    const toBeCuted = this.isShortcut ? [this.motorcycleSegments[this.motorcycleSegments.length - 1]] : this.motorcycleSegments;
+    const toBeCuted = this.isShortcut
+      ? [this.motorcycleSegments[this.motorcycleSegments.length - 1]]
+      : this.motorcycleSegments;
 
     for (const segA of this.motorcycleSegments) {
       for (const segB of toBeCuted) {
         if (segA.notEqual(segB)) {
           const inter: geom.IPoint = <geom.IPoint>geom.intersection(segA, segB);
 
-          if (!inter)
-            continue
+          if (!inter) {
+            continue;
+          }
 
           const segATime: number = time(segA.s, inter, segA.velocity);
           const segBTime: number = time(segB.s, inter, segB.velocity);
@@ -68,7 +70,7 @@ export class MotorcycleGraph {
           pointA.winMotorcycle = segATime < segBTime ? segA : segB;
 
           const pointB: Intersection = Intersection.fromPoint(inter);
-          pointB.time = segBTime
+          pointB.time = segBTime;
           pointB.lostMotorcycle = segATime < segBTime ? segB : segA;
           pointB.winMotorcycle = segATime < segBTime ? segA : segB;
 
@@ -84,8 +86,9 @@ export class MotorcycleGraph {
             const nodeNumberA = segA.getNodeNumber();
             const nodeNumberB = segB.getNodeNumber();
 
-            const key: string = nodeNumberA < nodeNumberB ? `${nodeNumberA}${nodeNumberB}` : `${nodeNumberB}${nodeNumberA}`;
-            this.intersectionCache[key] = {pointA, pointB};
+            const key: string =
+              nodeNumberA < nodeNumberB ? `${nodeNumberA}${nodeNumberB}` : `${nodeNumberB}${nodeNumberA}`;
+            this.intersectionCache[key] = { pointA, pointB };
           } else {
             this.add(pointA);
             this.add(pointB);
@@ -105,12 +108,10 @@ export class MotorcycleGraph {
 
       if (inter.state == "lost") {
         if (inter.winMotorcycle.isAlive && inter.lostMotorcycle.isAlive) {
-          inter.lostMotorcycle.setTarget(inter, inter.time)
-        }
-
-        else if (!inter.winMotorcycle.isAlive && inter.lostMotorcycle.isAlive) {
+          inter.lostMotorcycle.setTarget(inter, inter.time);
+        } else if (!inter.winMotorcycle.isAlive && inter.lostMotorcycle.isAlive) {
           if (inter.lostMotorcycle.winTimes[inter.winMotorcycle.text] < inter.winMotorcycle.timeOfDeath) {
-            inter.lostMotorcycle.setTarget(inter, inter.time)
+            inter.lostMotorcycle.setTarget(inter, inter.time);
           }
         }
       }
@@ -118,7 +119,7 @@ export class MotorcycleGraph {
   }
 
   private calculateReductionCounter(): void {
-    this.motorcycleSegments.forEach(m => m.updateReductionCounter());
+    this.motorcycleSegments.forEach((m) => m.updateReductionCounter());
   }
 
   public addSegments(segment: MotorcycleSegment): void {
@@ -146,8 +147,8 @@ export class MotorcycleGraphCached extends MotorcycleGraph {
   public calculateMotorcycleSegmentIntersections(): void {
     const segB = this.motorcycleSegments[this.motorcycleSegments.length - 1];
     const size = this.motorcycleSegments.length - 1; // -1 to not have to test
-                                                     // -about equality of segA
-                                                     // -to segB
+    // -about equality of segA
+    // -to segB
 
     for (let i = 0; i < size; i += 1) {
       const nodeNumberA = this.motorcycleSegments[i].getNodeNumber();

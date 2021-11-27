@@ -16,11 +16,9 @@ export class Polygon {
     const size = points.length;
 
     for (let i = 0; i < size; i += 1) {
-      polygon.push(new geom.Segment(points[i], points[(i+1) % size]));
+      polygon.push(new geom.Segment(points[i], points[(i + 1) % size]));
     }
 
     return polygon;
   }
 }
-
-

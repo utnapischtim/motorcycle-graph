@@ -14,7 +14,7 @@ export class Intersection extends geom.Point {
 
   public equal(b: Intersection, epsilon: number = 0.0000000001): boolean {
     const fromParent = super.equal(<geom.IPoint>b, epsilon);
-    return fromParent && Math.abs(this.time - b.time) < epsilon;;
+    return fromParent && Math.abs(this.time - b.time) < epsilon;
   }
 
   public static fromPoint(p: geom.IPoint): Intersection {

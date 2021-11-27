@@ -19,7 +19,7 @@ export function calculateMotorcycleGraph(motorcycles: MotorcycleSegment[]) {
 }
 
 export function calculateIntersectionCache(motorcycles: MotorcycleSegment[]): IntersectionCache {
-  const motorcycleGraph = new MotorcycleGraph({isShortcut: false, buildCache: true});
+  const motorcycleGraph = new MotorcycleGraph({ isShortcut: false, buildCache: true });
   motorcycleGraph.motorcycleSegments = motorcycles;
   motorcycleGraph.calculateMotorcycleSegmentIntersections();
   return motorcycleGraph.intersectionCache;
@@ -33,7 +33,7 @@ export function calculateRandomList(
     motorcycle.resetReductionCounter();
   }
 
-  const motorcycleGraph = new MotorcycleGraphCached({isShortcut: true, buildCache: false});
+  const motorcycleGraph = new MotorcycleGraphCached({ isShortcut: true, buildCache: false });
   motorcycleGraph.setIntersectionCache(intersectionCache);
 
   let localCustomList: MotorcycleSegment[] = [];
