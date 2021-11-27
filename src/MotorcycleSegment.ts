@@ -29,6 +29,12 @@ export class MotorcycleSegment extends geom.Segment {
     this.doBackup();
   }
 
+  public static build(obj: any): MotorcycleSegment {
+    const s = new geom.Point(obj.s.x, obj.s.y);
+    const t = new geom.Point(obj.t.x, obj.t.y);
+    return new this(s, t, obj.velocity, obj.text);
+  }
+
   public getReductionCounterInformation(): ReductionCounterInformation {
     return {
       reductionCounter: this.reductionCounter,
