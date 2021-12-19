@@ -2,6 +2,7 @@ import type * as geom from "geometric";
 import { MotorcycleGraph, MotorcycleGraphCached } from "./MotorcycleGraph";
 import { Polygon } from "./Polygon";
 import { Motorcycles } from "./Motorcycles";
+import { Intersection } from "./Intersection";
 import type { IntersectionCache } from "./MotorcycleGraph";
 import type { MotorcycleSegment } from "./MotorcycleSegment";
 
@@ -48,4 +49,17 @@ export function calculateRandomList(
   }
 
   return localCustomList;
+}
+
+export function buildIntersectionCache(obj: any): IntersectionCache {
+  const intersectionCache: IntersectionCache = <IntersectionCache>{};
+
+  Object.keys(obj).forEach((key) => {
+    intersectionCache[key] = {
+      pointA: Intersection.build(obj[key]["pointA"]),
+      pointB: Intersection.build(obj[key]["pointB"]),
+    };
+  });
+
+  return intersectionCache;
 }

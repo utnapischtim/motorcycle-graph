@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.calculateRandomList = exports.calculateIntersectionCache = exports.calculateMotorcycleGraph = exports.calculateMotorcycles = exports.MotorcycleSegment = exports.Polygon = exports.Motorcycles = exports.MotorcycleGraph = exports.MotorcycleGraphCached = void 0;
+exports.buildIntersectionCache = exports.calculateRandomList = exports.calculateIntersectionCache = exports.calculateMotorcycleGraph = exports.calculateMotorcycles = exports.MotorcycleSegment = exports.Polygon = exports.Motorcycles = exports.MotorcycleGraph = exports.MotorcycleGraphCached = void 0;
 var MotorcycleGraph_1 = require("./dist/MotorcycleGraph");
 Object.defineProperty(exports, "MotorcycleGraphCached", { enumerable: true, get: function () { return MotorcycleGraph_1.MotorcycleGraphCached; } });
 Object.defineProperty(exports, "MotorcycleGraph", { enumerable: true, get: function () { return MotorcycleGraph_1.MotorcycleGraph; } });
@@ -15,4 +15,5 @@ Object.defineProperty(exports, "calculateMotorcycles", { enumerable: true, get: 
 Object.defineProperty(exports, "calculateMotorcycleGraph", { enumerable: true, get: function () { return utils_1.calculateMotorcycleGraph; } });
 Object.defineProperty(exports, "calculateIntersectionCache", { enumerable: true, get: function () { return utils_1.calculateIntersectionCache; } });
 Object.defineProperty(exports, "calculateRandomList", { enumerable: true, get: function () { return utils_1.calculateRandomList; } });
+Object.defineProperty(exports, "buildIntersectionCache", { enumerable: true, get: function () { return utils_1.buildIntersectionCache; } });
 //# sourceMappingURL=index.js.map

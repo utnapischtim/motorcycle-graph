@@ -1,6 +1,6 @@
 import * as geom from "geometric";
 
-import type { MotorcycleSegment } from "./MotorcycleSegment";
+import { MotorcycleSegment } from "./MotorcycleSegment";
 
 export class Intersection extends geom.Point {
   public time: number = 0;
@@ -10,6 +10,14 @@ export class Intersection extends geom.Point {
 
   public constructor(x: number, y: number) {
     super(x, y);
+  }
+
+  public static build(obj: any): Intersection {
+    const inter = new Intersection(obj["x"], obj["y"]);
+    inter.lostMotorcycle = MotorcycleSegment.build(obj["lostMotorcycle"]);
+    inter.winMotorcycle = MotorcycleSegment.build(obj["winMotorcycle"]);
+    inter.state = obj["state"];
+    return inter;
   }
 
   public equal(b: Intersection, epsilon: number = 0.0000000001): boolean {

@@ -9,4 +9,5 @@ export {
   calculateMotorcycleGraph,
   calculateIntersectionCache,
   calculateRandomList,
+  buildIntersectionCache,
 } from "./utils";
