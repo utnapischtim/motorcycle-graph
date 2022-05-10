@@ -12,7 +12,7 @@ export class MotorcycleSegment extends geom.Segment {
   public nodeNumber: number = 0;
   public isAlive: boolean = true;
   public backup: geom.IPoint[] = [];
-  public reductionCounter: number = 0;
+  public reductionCounter: number = 1;
   public reference_target: geom.IPoint;
   public isUsed: boolean = false;
   public timeOfDeath: number = 0;
@@ -82,7 +82,7 @@ export class MotorcycleSegment extends geom.Segment {
   }
 
   public resetReductionCounter(): void {
-    this.reductionCounter = 0;
+    this.reductionCounter = 1;
   }
 
   public setTarget(t: geom.IPoint, timeOfDeath: number = 0): void {
