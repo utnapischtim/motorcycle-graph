@@ -87,7 +87,7 @@ export class MotorcycleGraph {
             const nodeNumberB = segB.getNodeNumber();
 
             const key: string =
-              nodeNumberA < nodeNumberB ? `${nodeNumberA}${nodeNumberB}` : `${nodeNumberB}${nodeNumberA}`;
+              nodeNumberA < nodeNumberB ? `${nodeNumberA}-${nodeNumberB}` : `${nodeNumberB}-${nodeNumberA}`;
             this.intersectionCache[key] = { pointA, pointB };
           } else {
             this.add(pointA);
@@ -154,7 +154,7 @@ export class MotorcycleGraphCached extends MotorcycleGraph {
       const nodeNumberA = this.motorcycleSegments[i].getNodeNumber();
       const nodeNumberB = segB.getNodeNumber();
 
-      const key: string = nodeNumberA < nodeNumberB ? `${nodeNumberA}${nodeNumberB}` : `${nodeNumberB}${nodeNumberA}`;
+      const key: string = nodeNumberA < nodeNumberB ? `${nodeNumberA}-${nodeNumberB}` : `${nodeNumberB}-${nodeNumberA}`;
 
       const inter: IntersectionCachePoint = this.intersectionCache[key];
 
